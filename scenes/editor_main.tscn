@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dm8vdl7rxoe4r"]
+[gd_scene load_steps=5 format=3 uid="uid://dm8vdl7rxoe4r"]
 
 [ext_resource type="Script" path="res://scripts/editor_main.gd" id="1_krg5v"]
+[ext_resource type="Script" path="res://scripts/op_tree.gd" id="2_hwnt3"]
 
 [sub_resource type="Gradient" id="Gradient_5nl6j"]
 
@@ -40,10 +41,12 @@ unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+theme_override_font_sizes/font_size = 12
 allow_search = false
 hide_root = true
 select_mode = 2
 scroll_horizontal_enabled = false
+script = ExtResource("2_hwnt3")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2

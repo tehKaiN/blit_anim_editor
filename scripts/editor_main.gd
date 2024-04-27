@@ -90,6 +90,7 @@ func _ready() -> void:
 	var tree_node := op_tree.create_item()
 	tree_node.set_text(0, "Root")
 	add_op_button.connect("pressed", _on_add_button_pressed)
+	op_tree.reordered.connect(_on_tree_reordered)
 
 	current_frame_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
 	scratch_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
@@ -118,8 +119,12 @@ func _on_add_button_pressed() -> void:
 
 	_draw_frame_from_commands()
 
+func _on_tree_reordered() -> void:
+	_draw_frame_from_commands()
+
 
 func _draw_frame_from_commands() -> void:
+	current_frame_image.fill(Color.BLACK)
 	var ops : Array[BlitterOp] = []
 	for child in op_tree.get_root().get_children():
 			var op = child.get_meta("op") as BlitterOp
