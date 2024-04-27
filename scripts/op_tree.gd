@@ -24,5 +24,6 @@ func _drop_data(at_position: Vector2, data: Variant) -> void:
 		data.move_before(hovered_item)
 	elif drop_section == 1:
 		data.move_after(hovered_item)
-	reordered.emit()
 	drop_mode_flags &= ~DROP_MODE_INBETWEEN
+	print("drag stop")
+	reordered.emit()

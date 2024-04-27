@@ -1,23 +1,37 @@
+class_name EditorMain
 extends Control
 
 class BlitterOp:
 	func apply(image: Image, scratch_image: Image) -> void:
 		pass
-	func create_gizmos(gizmo_array: Array[Control], parent: Control) -> void:
-		pass
+	func create_editor(frame_rect: TextureRect) -> Control:
+		return null
 
 
 class PolyOp extends BlitterOp:
-		var points: Array[Vector2i]
+		class Point:
+			var pos: Vector2i
+
+			func _init(pos: Vector2i):
+				self.pos = pos
+
+
+		var points: Array[Point]
 		var color: Color
 		var is_fill: bool
 		var is_keep_border: bool
+		const POLYGON_EDITOR = preload("res://scenes/polygon_editor.tscn")
 
-		func _init(points: Array[Vector2i], color: Color, is_fill: bool, is_keep_border: bool) -> void:
-			self.points = points
+		func _init(positions: Array[Vector2i], color: Color, is_fill: bool, is_keep_border: bool) -> void:
+			self.points = []
+			for pos: Vector2i in positions:
+				var point := Point.new(pos)
+				points.push_back(point)
+
 			self.color = color
 			self.is_fill = is_fill
 			self.is_keep_border = is_keep_border
+
 
 		func apply(image: Image, scratch_image: Image) -> void:
 			scratch_image.fill(Color.BLACK)
@@ -28,20 +42,17 @@ class PolyOp extends BlitterOp:
 			while i < points.size():
 				var prev := points[i - 1]
 				var next := points[i]
-				_draw_fill_line(scratch_image, prev, next)
+				_draw_fill_line(scratch_image, prev.pos, next.pos)
 				i += 1
-			_draw_fill_line(scratch_image, points.back(), points.front())
+			_draw_fill_line(scratch_image, points.back().pos, points.front().pos)
 			if is_fill:
 				_fill_polygon(scratch_image, image, bounds)
 
 
-		func create_gizmos(gizmo_array: Array[Control], parent: Control) -> void:
-			for point: Vector2i in points:
-				var gizmo = Button.new()
-				gizmo.text = "a"
-				parent.add_child(gizmo)
-				gizmo.position = point
-				gizmo_array.push_back(gizmo)
+		func create_editor(frame_rect: TextureRect) -> Control:
+			var editor := POLYGON_EDITOR.instantiate() as PolygonEditor
+			editor.init(self, frame_rect)
+			return editor
 
 
 		func _draw_fill_line(scratch_image: Image, start: Vector2i, end: Vector2i) -> void:
@@ -77,37 +88,44 @@ class PolyOp extends BlitterOp:
 
 
 		func _calculate_bounds() -> Rect2i:
-			var bounds := Rect2i(points[0], points[1] - points[0])
-			for point: Vector2i in points:
-				if point.x < bounds.position.x:
-					bounds.position.x = point.x
-				if point.x > bounds.end.x:
-					bounds.end.x = point.x
-				if point.y < bounds.position.y:
-					bounds.position.y = point.y
-				if point.y > bounds.end.y:
-					bounds.end.y = point.y
+			var min := points[0].pos
+			var max := points[0].pos
+			for point: Point in points:
+				if point.pos.x < min.x:
+					min.x = point.pos.x
+				if point.pos.x > max.x:
+					max.x = point.pos.x
+				if point.pos.y < min.y:
+					min.y = point.pos.y
+				if point.pos.y > max.y:
+					max.y = point.pos.y
+			var bounds := Rect2i(min, max - min)
 			return bounds
+
 
 @onready var add_op_button: Button = %AddOpButton
 @onready var op_tree: Tree = %OpTree
 @onready var current_frame: TextureRect = %CurrentFrame
 
+var current_op_editor: Control
 var current_frame_image: Image
 var scratch_image: Image
 var current_frame_texture: ImageTexture
-var op_gizmos: Array[Control]
 var selected_item: TreeItem:
 	set(value):
 		if selected_item == value:
 			return
+		if current_op_editor:
+			current_op_editor.get_parent().remove_child(current_op_editor)
+			current_op_editor = null
+
 		selected_item = value
-		for gizmo: Control in op_gizmos:
-			gizmo.get_parent().remove_child(gizmo)
-		op_gizmos.clear()
-		if value != null:
+		if value:
 			var op := value.get_meta("op") as BlitterOp
-			op.create_gizmos(op_gizmos, current_frame)
+			current_op_editor = op.create_editor(current_frame)
+			if current_op_editor:
+				get_tree().root.add_child(current_op_editor)
+				current_op_editor.data_changed.connect(_on_editor_data_changed)
 
 
 func _ready() -> void:
@@ -132,6 +150,9 @@ func _process(delta: float) -> void:
 
 static var item_index := 0
 
+func _on_editor_data_changed() -> void:
+	_draw_frame_from_commands()
+
 func _on_add_button_pressed() -> void:
 	var item := op_tree.create_item()
 	item.set_text(0, "Op_{0}".format([item_index]))
@@ -142,7 +163,6 @@ func _on_add_button_pressed() -> void:
 		color, true, true)
 	)
 	item_index += 1
-
 	_draw_frame_from_commands()
 
 func _on_tree_reordered() -> void:

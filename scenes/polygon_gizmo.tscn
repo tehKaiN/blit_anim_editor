@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://dmkote76oyjvv"]
+
+[ext_resource type="Script" path="res://scripts/polygon_gizmo.gd" id="1_qn5be"]
+[ext_resource type="Texture2D" uid="uid://dui3hg2rkg7qd" path="res://assets/icons/EditorPositionUnselected.png" id="1_s3av7"]
+[ext_resource type="Script" path="res://scripts/drag_gizmo.gd" id="2_c4451"]
+[ext_resource type="Texture2D" uid="uid://btchxvg2etocv" path="res://assets/icons/EditorPosition.png" id="3_w0akq"]
+
+[node name="PolygonGizmo" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+script = ExtResource("1_qn5be")
+
+[node name="TextureRect" type="TextureRect" parent="." node_paths=PackedStringArray("dragged_control")]
+layout_mode = 0
+offset_left = -8.0
+offset_top = -8.0
+offset_right = 8.0
+offset_bottom = 8.0
+mouse_filter = 0
+texture = ExtResource("1_s3av7")
+script = ExtResource("2_c4451")
+unselected_texture = ExtResource("1_s3av7")
+selected_texture = ExtResource("3_w0akq")
+dragged_control = NodePath("..")

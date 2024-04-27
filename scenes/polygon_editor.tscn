@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://7eq0smqlxufs"]
+
+[ext_resource type="Script" path="res://scripts/polygon_editor.gd" id="1_xwt8c"]
+[ext_resource type="PackedScene" uid="uid://dmkote76oyjvv" path="res://scenes/polygon_gizmo.tscn" id="2_2k41x"]
+
+[node name="PolygonEditor" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_xwt8c")
+_gizmo_scene = ExtResource("2_2k41x")
+
+[node name="Gizmos" type="Control" parent="."]
+unique_name_in_owner = true
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
