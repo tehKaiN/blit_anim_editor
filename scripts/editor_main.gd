@@ -3,6 +3,8 @@ extends Control
 class BlitterOp:
 	func apply(image: Image, scratch_image: Image) -> void:
 		pass
+	func create_gizmos(gizmo_array: Array[Control], parent: Control) -> void:
+		pass
 
 
 class PolyOp extends BlitterOp:
@@ -31,6 +33,16 @@ class PolyOp extends BlitterOp:
 			_draw_fill_line(scratch_image, points.back(), points.front())
 			if is_fill:
 				_fill_polygon(scratch_image, image, bounds)
+
+
+		func create_gizmos(gizmo_array: Array[Control], parent: Control) -> void:
+			for point: Vector2i in points:
+				var gizmo = Button.new()
+				gizmo.text = "a"
+				parent.add_child(gizmo)
+				gizmo.position = point
+				gizmo_array.push_back(gizmo)
+
 
 		func _draw_fill_line(scratch_image: Image, start: Vector2i, end: Vector2i) -> void:
 			if end.y < start.y: # draw from top to bottom
@@ -84,18 +96,32 @@ class PolyOp extends BlitterOp:
 var current_frame_image: Image
 var scratch_image: Image
 var current_frame_texture: ImageTexture
+var op_gizmos: Array[Control]
+var selected_item: TreeItem:
+	set(value):
+		if selected_item == value:
+			return
+		selected_item = value
+		for gizmo: Control in op_gizmos:
+			gizmo.get_parent().remove_child(gizmo)
+		op_gizmos.clear()
+		if value != null:
+			var op := value.get_meta("op") as BlitterOp
+			op.create_gizmos(op_gizmos, current_frame)
 
 
 func _ready() -> void:
 	var tree_node := op_tree.create_item()
 	tree_node.set_text(0, "Root")
-	add_op_button.connect("pressed", _on_add_button_pressed)
+	add_op_button.pressed.connect(_on_add_button_pressed)
 	op_tree.reordered.connect(_on_tree_reordered)
+	op_tree.item_selected.connect(_on_tree_item_selected)
 
 	current_frame_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
 	scratch_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
 	current_frame_texture = ImageTexture.create_from_image(current_frame_image)
 	current_frame.texture = current_frame_texture
+	current_frame.get_parent().resized.connect(_on_frame_container_resized)
 
 	_draw_frame_from_commands()
 
@@ -107,11 +133,11 @@ func _process(delta: float) -> void:
 static var item_index := 0
 
 func _on_add_button_pressed() -> void:
-	var tree_node := op_tree.create_item()
-	tree_node.set_text(0, "Op_{0}".format([item_index]))
+	var item := op_tree.create_item()
+	item.set_text(0, "Op_{0}".format([item_index]))
 	var offs := Vector2i(randi() % 200, randi() % 200)
 	var color := Color(randf(), randf(), randf())
-	tree_node.set_meta("op", PolyOp.new(
+	item.set_meta("op", PolyOp.new(
 		[Vector2i(5, 5) + offs, Vector2i(50, 50) + offs, Vector2i(100, 10) + offs],
 		color, true, true)
 	)
@@ -121,6 +147,17 @@ func _on_add_button_pressed() -> void:
 
 func _on_tree_reordered() -> void:
 	_draw_frame_from_commands()
+
+
+func _on_tree_item_selected() -> void:
+	selected_item = op_tree.get_selected()
+
+
+func _on_frame_container_resized() -> void:
+	#var scale_vector := (current_frame.get_parent() as Control).size / Vector2(320, 256)
+	#var scale = mini(scale_vector.x, scale_vector.y)
+	#current_frame.custom_minimum_size = Vector2i(320, 256) * scale
+	pass
 
 
 func _draw_frame_from_commands() -> void:

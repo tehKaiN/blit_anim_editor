@@ -1,7 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://dm8vdl7rxoe4r"]
+[gd_scene load_steps=6 format=3 uid="uid://dm8vdl7rxoe4r"]
 
 [ext_resource type="Script" path="res://scripts/editor_main.gd" id="1_krg5v"]
 [ext_resource type="Script" path="res://scripts/op_tree.gd" id="2_hwnt3"]
+
+[sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5cc46"]
+size = Vector2(320, 256)
 
 [sub_resource type="Gradient" id="Gradient_5nl6j"]
 
@@ -44,7 +47,7 @@ size_flags_vertical = 3
 theme_override_font_sizes/font_size = 12
 allow_search = false
 hide_root = true
-select_mode = 2
+select_mode = 1
 scroll_horizontal_enabled = false
 script = ExtResource("2_hwnt3")
 
@@ -53,13 +56,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_stretch_ratio = 4.0
 
-[node name="CurrentFrame" type="TextureRect" parent="HBoxContainer/VBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="CurrentFrame" type="TextureRect" parent="HBoxContainer/VBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 texture_filter = 1
 layout_mode = 2
-size_flags_vertical = 3
+size_flags_horizontal = 4
+size_flags_vertical = 6
 size_flags_stretch_ratio = 3.0
-stretch_mode = 3
+texture = SubResource("PlaceholderTexture2D_5cc46")
+stretch_mode = 4
 
 [node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
