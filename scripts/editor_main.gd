@@ -122,7 +122,7 @@ var selected_item: TreeItem:
 		if selected_item == value:
 			return
 		if current_op_editor:
-			current_op_editor.get_parent().remove_child(current_op_editor)
+			current_op_editor.queue_free()
 			current_op_editor = null
 
 		selected_item = value
