@@ -7,18 +7,28 @@ class BlitterOp:
 	func _init(op_name: String):
 		name = op_name
 
-	func apply(image: Image, scratch_image: Image) -> void:
+	func apply(image: Image, scratch_image: Image, aux_image: Image) -> void:
 		pass
 	func create_editor(image_frame: ImageFrame) -> Control:
 		return null
 
 
-class ClearOp extends BlitterOp:
-	func apply(image: Image, scratch_image: Image) -> void:
+class BlitterOpCopyToAux extends BlitterOp:
+	func apply(image: Image, scratch_image: Image, aux_image: Image) -> void:
+		aux_image.copy_from(image)
+
+
+class BlitterOpPasteFromAux extends BlitterOp:
+	func apply(image: Image, scratch_image: Image, aux_image: Image) -> void:
+		image.copy_from(aux_image)
+
+
+class BlitterOpClear extends BlitterOp:
+	func apply(image: Image, scratch_image: Image, aux_image: Image) -> void:
 		image.fill(Color.BLACK)
 
 
-class PolyOp extends BlitterOp:
+class BlitterOpPoly extends BlitterOp:
 		class Point:
 			var pos: Vector2i
 
@@ -44,7 +54,7 @@ class PolyOp extends BlitterOp:
 			self.is_keep_border = is_keep_border
 
 
-		func apply(image: Image, scratch_image: Image) -> void:
+		func apply(image: Image, scratch_image: Image, aux_image: Image) -> void:
 			scratch_image.fill(Color.BLACK)
 			var bounds := _calculate_bounds()
 			#print("bounds: {0} {1}".format([bounds.position, bounds.end]))
@@ -113,14 +123,17 @@ class PolyOp extends BlitterOp:
 			var bounds := Rect2i(min, max - min)
 			return bounds
 
-@onready var _add_polygon_button: Button = %AddPolygonButton
 @onready var _add_clear_button: Button = %AddClearButton
+@onready var _add_polygon_button: Button = %AddPolygonButton
+@onready var _copy_to_aux_button: Button = %CopyToAuxButton
+@onready var _paste_from_aux_button: Button = %PasteFromAuxButton
 @onready var op_tree: Tree = %OpTree
 @onready var current_frame: ImageFrame = %CurrentFrame
 
 var current_op_editor: Control
 var current_frame_image: Image
 var scratch_image: Image
+var aux_image: Image
 var current_frame_texture: ImageTexture
 var selected_item: TreeItem:
 	set(value):
@@ -142,13 +155,16 @@ var selected_item: TreeItem:
 func _ready() -> void:
 	var root_node := op_tree.create_item()
 	root_node.set_text(0, "Root")
-	_add_polygon_button.pressed.connect(_on_add_polygon_button_pressed)
 	_add_clear_button.pressed.connect(_on_add_clear_button_pressed)
+	_add_polygon_button.pressed.connect(_on_add_polygon_button_pressed)
+	_copy_to_aux_button.pressed.connect(_on_copy_to_aux_button_pressed)
+	_paste_from_aux_button.pressed.connect(_on_paste_from_aux_button_pressed)
 	op_tree.reordered.connect(_on_tree_reordered)
 	op_tree.item_selected.connect(_on_tree_item_selected)
 
 	current_frame_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
 	scratch_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
+	aux_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
 	current_frame_texture = ImageTexture.create_from_image(current_frame_image)
 	current_frame.texture = current_frame_texture
 	current_frame.get_parent().resized.connect(_on_frame_container_resized)
@@ -163,31 +179,34 @@ func _process(delta: float) -> void:
 func _on_editor_data_changed() -> void:
 	_draw_frame_from_commands()
 
+
+func _on_copy_to_aux_button_pressed() -> void:
+	var op_name := _get_free_op_name(op_tree, "ToAux")
+	var op := BlitterOpCopyToAux.new(op_name)
+	_add_op(op, _copy_to_aux_button.icon)
+
+
+func _on_paste_from_aux_button_pressed() -> void:
+	var op_name := _get_free_op_name(op_tree, "FromAux")
+	var op := BlitterOpPasteFromAux.new(op_name)
+	_add_op(op, _paste_from_aux_button.icon)
+
 func _on_add_clear_button_pressed() -> void:
 	var op_name := _get_free_op_name(op_tree, "Clear")
-	var op := ClearOp.new(op_name)
-
-	var item := op_tree.create_item()
-	item.set_icon(0, _add_clear_button.icon)
-	item.set_text(0, op_name)
-	item.set_meta("op", op)
-	_draw_frame_from_commands()
+	var op := BlitterOpClear.new(op_name)
+	_add_op(op, _add_clear_button.icon)
 
 func _on_add_polygon_button_pressed() -> void:
 	var color := Color(randf(), randf(), randf())
 	var offs := Vector2i(randi() % 200, randi() % 200)
 	var op_name := _get_free_op_name(op_tree, "Polygon")
-	var op := PolyOp.new(
+	var op := BlitterOpPoly.new(
 		op_name,
 		[Vector2i(5, 5) + offs, Vector2i(50, 50) + offs, Vector2i(100, 10) + offs],
 		color, true, true
 	)
+	_add_op(op, _add_polygon_button.icon)
 
-	var item := op_tree.create_item()
-	item.set_icon(0, _add_polygon_button.icon)
-	item.set_text(0, op_name)
-	item.set_meta("op", op)
-	_draw_frame_from_commands()
 
 func _on_tree_reordered() -> void:
 	_draw_frame_from_commands()
@@ -224,6 +243,7 @@ func _get_free_op_name(op_tree: Tree, base_name: String) ->  String:
 		i += 1
 	return check_name
 
+
 func _draw_frame_from_commands() -> void:
 	current_frame_image.fill(Color.BLACK)
 	var ops : Array[BlitterOp] = []
@@ -232,5 +252,13 @@ func _draw_frame_from_commands() -> void:
 			ops.push_back(op)
 
 	for op: BlitterOp in ops:
-		op.apply(current_frame_image, scratch_image)
+		op.apply(current_frame_image, scratch_image, aux_image)
 	current_frame_texture.update(current_frame_image)
+
+
+func _add_op(op: BlitterOp, icon: Texture2D) -> void:
+	var item := op_tree.create_item()
+	item.set_icon(0, icon)
+	item.set_text(0, op.name)
+	item.set_meta("op", op)
+	_draw_frame_from_commands()

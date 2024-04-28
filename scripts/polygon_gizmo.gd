@@ -4,14 +4,14 @@ extends Control
 signal data_changed()
 
 var _image_frame: ImageFrame
-var _point: EditorMain.PolyOp.Point
+var _point: EditorMain.BlitterOpPoly.Point
 var _editor: PolygonEditor
 
 var is_drag_enabled: bool:
 	get:
 		return _editor.active_tool == PolygonEditor.Tool.MOVE
 
-func init(image_frame: ImageFrame, point: EditorMain.PolyOp.Point, editor: PolygonEditor) -> void:
+func init(image_frame: ImageFrame, point: EditorMain.BlitterOpPoly.Point, editor: PolygonEditor) -> void:
 	_image_frame = image_frame
 	_point = point
 	_editor = editor

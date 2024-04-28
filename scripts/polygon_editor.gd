@@ -11,7 +11,7 @@ enum Tool {NONE, ADD, REMOVE, MOVE}
 @onready var _move_button: Button = %MoveButton
 
 var _image_frame: ImageFrame
-var _op: EditorMain.PolyOp
+var _op: EditorMain.BlitterOpPoly
 var _is_button_used := false
 
 var active_tool: Tool:
@@ -30,7 +30,7 @@ func init(op: EditorMain.BlitterOp, image_frame: ImageFrame) -> void:
 	_image_frame.mouse_button_on_position.connect(_on_image_frame_mouse_button_on_position)
 
 
-func try_remove_point(point: EditorMain.PolyOp.Point) -> bool:
+func try_remove_point(point: EditorMain.BlitterOpPoly.Point) -> bool:
 	if _op.points.size() <= 3:
 		return false
 	_op.points.erase(point)
@@ -50,7 +50,7 @@ func _update_op_gizmos() -> void:
 	for gizmo: Control in _gizmos.get_children():
 		gizmo.queue_free()
 
-	for point: EditorMain.PolyOp.Point in _op.points:
+	for point: EditorMain.BlitterOpPoly.Point in _op.points:
 		var gizmo = _gizmo_scene.instantiate() as PolygonGizmo
 		assert(gizmo != null)
 		gizmo.data_changed.connect(_on_gizmo_data_changed)
@@ -62,7 +62,7 @@ static func _square(x: float) -> float:
 	return x*x
 
 
-func _find_point_before_in_nearest_line(position: Vector2i) -> EditorMain.PolyOp.Point:
+func _find_point_before_in_nearest_line(position: Vector2i) -> EditorMain.BlitterOpPoly.Point:
 	var point_count := _op.points.size()
 	var closest_distance := INF
 	var closest_point_before :=  _op.points[0]
@@ -96,7 +96,7 @@ func _on_image_frame_mouse_button_on_position(is_pressed: bool, mouse_position: 
 		_is_button_used = true
 		if _add_button.button_pressed:
 			var point_before := _find_point_before_in_nearest_line(mouse_position)
-			_op.points.insert(_op.points.find(point_before) + 1, EditorMain.PolyOp.Point.new(mouse_position))
+			_op.points.insert(_op.points.find(point_before) + 1, EditorMain.BlitterOpPoly.Point.new(mouse_position))
 			notify_data_changed()
 			_update_op_gizmos()
 	elif !is_pressed:
