@@ -2,6 +2,11 @@ class_name EditorMain
 extends Control
 
 class BlitterOp:
+	var name: String
+
+	func _init(op_name: String):
+		name = op_name
+
 	func apply(image: Image, scratch_image: Image) -> void:
 		pass
 	func create_editor(frame_rect: TextureRect) -> Control:
@@ -22,7 +27,8 @@ class PolyOp extends BlitterOp:
 		var is_keep_border: bool
 		const POLYGON_EDITOR = preload("res://scenes/polygon_editor.tscn")
 
-		func _init(positions: Array[Vector2i], color: Color, is_fill: bool, is_keep_border: bool) -> void:
+		func _init(op_name: String, positions: Array[Vector2i], color: Color, is_fill: bool, is_keep_border: bool) -> void:
+			super(op_name)
 			self.points = []
 			for pos: Vector2i in positions:
 				var point := Point.new(pos)
@@ -103,7 +109,7 @@ class PolyOp extends BlitterOp:
 			return bounds
 
 
-@onready var add_op_button: Button = %AddOpButton
+@onready var add_polygon_button: Button = %AddPolygonButton
 @onready var op_tree: Tree = %OpTree
 @onready var current_frame: TextureRect = %CurrentFrame
 
@@ -131,7 +137,7 @@ var selected_item: TreeItem:
 func _ready() -> void:
 	var tree_node := op_tree.create_item()
 	tree_node.set_text(0, "Root")
-	add_op_button.pressed.connect(_on_add_button_pressed)
+	add_polygon_button.pressed.connect(_on_add_polygon_button_pressed)
 	op_tree.reordered.connect(_on_tree_reordered)
 	op_tree.item_selected.connect(_on_tree_item_selected)
 
@@ -148,21 +154,22 @@ func _process(delta: float) -> void:
 	pass
 
 
-static var item_index := 0
-
 func _on_editor_data_changed() -> void:
 	_draw_frame_from_commands()
 
-func _on_add_button_pressed() -> void:
-	var item := op_tree.create_item()
-	item.set_text(0, "Op_{0}".format([item_index]))
-	var offs := Vector2i(randi() % 200, randi() % 200)
+func _on_add_polygon_button_pressed() -> void:
 	var color := Color(randf(), randf(), randf())
-	item.set_meta("op", PolyOp.new(
+	var offs := Vector2i(randi() % 200, randi() % 200)
+	var op_name := _get_free_op_name(op_tree, "Polygon")
+	var op := PolyOp.new(
+		op_name,
 		[Vector2i(5, 5) + offs, Vector2i(50, 50) + offs, Vector2i(100, 10) + offs],
-		color, true, true)
+		color, true, true
 	)
-	item_index += 1
+
+	var item := op_tree.create_item()
+	item.set_text(0, op_name)
+	item.set_meta("op", op)
 	_draw_frame_from_commands()
 
 func _on_tree_reordered() -> void:
@@ -179,6 +186,26 @@ func _on_frame_container_resized() -> void:
 	#current_frame.custom_minimum_size = Vector2i(320, 256) * scale
 	pass
 
+
+func _get_free_op_name(op_tree: Tree, base_name: String) ->  String:
+	var check_name := base_name
+
+	if !op_tree.get_root().get_children().any(
+		func(item: TreeItem):
+			return item.get_text(0) == check_name
+	):
+		return check_name
+
+	var i := 2
+	while true:
+		check_name = base_name + str(i)
+		if !op_tree.get_root().get_children().any(
+			func(item: TreeItem):
+				return item.get_text(0) == check_name
+		):
+			break
+		i += 1
+	return check_name
 
 func _draw_frame_from_commands() -> void:
 	current_frame_image.fill(Color.BLACK)

@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://dm8vdl7rxoe4r"]
+[gd_scene load_steps=7 format=3 uid="uid://dm8vdl7rxoe4r"]
 
 [ext_resource type="Script" path="res://scripts/editor_main.gd" id="1_krg5v"]
+[ext_resource type="Texture2D" uid="uid://bh34jlwud845r" path="res://assets/icons/Polygon2D.png" id="2_7628j"]
 [ext_resource type="Script" path="res://scripts/op_tree.gd" id="2_hwnt3"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5cc46"]
@@ -34,10 +35,11 @@ size_flags_horizontal = 3
 custom_minimum_size = Vector2(0, 24)
 layout_mode = 2
 
-[node name="AddOpButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="AddPolygonButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "+"
+text = "Polygon"
+icon = ExtResource("2_7628j")
 
 [node name="OpTree" type="Tree" parent="HBoxContainer/VBoxContainer2"]
 unique_name_in_owner = true
