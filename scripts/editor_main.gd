@@ -13,6 +13,11 @@ class BlitterOp:
 		return null
 
 
+class ClearOp extends BlitterOp:
+	func apply(image: Image, scratch_image: Image) -> void:
+		image.fill(Color.BLACK)
+
+
 class PolyOp extends BlitterOp:
 		class Point:
 			var pos: Vector2i
@@ -108,8 +113,8 @@ class PolyOp extends BlitterOp:
 			var bounds := Rect2i(min, max - min)
 			return bounds
 
-
-@onready var add_polygon_button: Button = %AddPolygonButton
+@onready var _add_polygon_button: Button = %AddPolygonButton
+@onready var _add_clear_button: Button = %AddClearButton
 @onready var op_tree: Tree = %OpTree
 @onready var current_frame: ImageFrame = %CurrentFrame
 
@@ -135,9 +140,10 @@ var selected_item: TreeItem:
 
 
 func _ready() -> void:
-	var tree_node := op_tree.create_item()
-	tree_node.set_text(0, "Root")
-	add_polygon_button.pressed.connect(_on_add_polygon_button_pressed)
+	var root_node := op_tree.create_item()
+	root_node.set_text(0, "Root")
+	_add_polygon_button.pressed.connect(_on_add_polygon_button_pressed)
+	_add_clear_button.pressed.connect(_on_add_clear_button_pressed)
 	op_tree.reordered.connect(_on_tree_reordered)
 	op_tree.item_selected.connect(_on_tree_item_selected)
 
@@ -157,6 +163,16 @@ func _process(delta: float) -> void:
 func _on_editor_data_changed() -> void:
 	_draw_frame_from_commands()
 
+func _on_add_clear_button_pressed() -> void:
+	var op_name := _get_free_op_name(op_tree, "Clear")
+	var op := ClearOp.new(op_name)
+
+	var item := op_tree.create_item()
+	item.set_icon(0, _add_clear_button.icon)
+	item.set_text(0, op_name)
+	item.set_meta("op", op)
+	_draw_frame_from_commands()
+
 func _on_add_polygon_button_pressed() -> void:
 	var color := Color(randf(), randf(), randf())
 	var offs := Vector2i(randi() % 200, randi() % 200)
@@ -168,6 +184,7 @@ func _on_add_polygon_button_pressed() -> void:
 	)
 
 	var item := op_tree.create_item()
+	item.set_icon(0, _add_polygon_button.icon)
 	item.set_text(0, op_name)
 	item.set_meta("op", op)
 	_draw_frame_from_commands()
