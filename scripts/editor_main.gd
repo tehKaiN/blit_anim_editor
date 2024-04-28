@@ -9,7 +9,7 @@ class BlitterOp:
 
 	func apply(image: Image, scratch_image: Image) -> void:
 		pass
-	func create_editor(frame_rect: TextureRect) -> Control:
+	func create_editor(image_frame: ImageFrame) -> Control:
 		return null
 
 
@@ -55,9 +55,9 @@ class PolyOp extends BlitterOp:
 				_fill_polygon(scratch_image, image, bounds)
 
 
-		func create_editor(frame_rect: TextureRect) -> Control:
+		func create_editor(image_frame: ImageFrame) -> Control:
 			var editor := POLYGON_EDITOR.instantiate() as PolygonEditor
-			editor.init(self, frame_rect)
+			editor.init(self, image_frame)
 			return editor
 
 
@@ -111,7 +111,7 @@ class PolyOp extends BlitterOp:
 
 @onready var add_polygon_button: Button = %AddPolygonButton
 @onready var op_tree: Tree = %OpTree
-@onready var current_frame: TextureRect = %CurrentFrame
+@onready var current_frame: ImageFrame = %CurrentFrame
 
 var current_op_editor: Control
 var current_frame_image: Image

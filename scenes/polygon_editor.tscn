@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://7eq0smqlxufs"]
+[gd_scene load_steps=7 format=3 uid="uid://7eq0smqlxufs"]
 
 [ext_resource type="Script" path="res://scripts/polygon_editor.gd" id="1_xwt8c"]
 [ext_resource type="PackedScene" uid="uid://dmkote76oyjvv" path="res://scenes/polygon_gizmo.tscn" id="2_2k41x"]
+[ext_resource type="Texture2D" uid="uid://brw3b4r5qf8ue" path="res://assets/icons/CurveCreate.png" id="3_d6bmq"]
+[ext_resource type="ButtonGroup" uid="uid://oi7vud5w7641" path="res://resources/button_groups/polygon_editor_mode_btngrp.tres" id="3_gdioi"]
+[ext_resource type="Texture2D" uid="uid://4g10bvpuispe" path="res://assets/icons/CurveDelete.png" id="4_walhq"]
+[ext_resource type="Texture2D" uid="uid://cnhk0g8byyr0u" path="res://assets/icons/CurveEdit.png" id="5_4u7bk"]
 
 [node name="PolygonEditor" type="Control"]
 layout_mode = 3
@@ -13,6 +17,37 @@ grow_vertical = 2
 mouse_filter = 2
 script = ExtResource("1_xwt8c")
 _gizmo_scene = ExtResource("2_2k41x")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 250.0
+offset_right = 453.0
+offset_bottom = 40.0
+
+[node name="AddButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("3_gdioi")
+text = "Add"
+icon = ExtResource("3_d6bmq")
+
+[node name="RemoveButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_group = ExtResource("3_gdioi")
+text = "Remove"
+icon = ExtResource("4_walhq")
+
+[node name="MoveButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+toggle_mode = true
+button_pressed = true
+button_group = ExtResource("3_gdioi")
+text = "Move"
+icon = ExtResource("5_4u7bk")
 
 [node name="Gizmos" type="Control" parent="."]
 unique_name_in_owner = true
