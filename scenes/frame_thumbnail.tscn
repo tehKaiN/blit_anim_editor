@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://ruj6lyoq0wy0"]
+
+[ext_resource type="ButtonGroup" uid="uid://4bb8mdouni2r" path="res://resources/button_groups/frame_thumbnail_btngrp.tres" id="1_6gpr0"]
+[ext_resource type="Script" path="res://scripts/frame_thumbnail.gd" id="1_j1a4o"]
+
+[node name="FrameThumbnail" type="MarginContainer"]
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+script = ExtResource("1_j1a4o")
+
+[node name="Button" type="Button" parent="."]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 3.0
+toggle_mode = true
+button_group = ExtResource("1_6gpr0")

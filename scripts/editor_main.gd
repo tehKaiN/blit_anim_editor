@@ -123,12 +123,17 @@ class BlitterOpPoly extends BlitterOp:
 			var bounds := Rect2i(min, max - min)
 			return bounds
 
+@export var frame_thumbnail_scene: PackedScene
+
 @onready var _add_clear_button: Button = %AddClearButton
 @onready var _add_polygon_button: Button = %AddPolygonButton
 @onready var _copy_to_aux_button: Button = %CopyToAuxButton
 @onready var _paste_from_aux_button: Button = %PasteFromAuxButton
 @onready var op_tree: Tree = %OpTree
 @onready var current_frame: ImageFrame = %CurrentFrame
+@onready var frame_thumbnail_container: HBoxContainer = %FrameThumbnailContainer
+@onready var frame_add_button: Button = %FrameAddButton
+@onready var frame_remove_button: Button = %FrameRemoveButton
 
 var current_op_editor: Control
 var current_frame_image: Image
@@ -159,8 +164,12 @@ func _ready() -> void:
 	_add_polygon_button.pressed.connect(_on_add_polygon_button_pressed)
 	_copy_to_aux_button.pressed.connect(_on_copy_to_aux_button_pressed)
 	_paste_from_aux_button.pressed.connect(_on_paste_from_aux_button_pressed)
+
 	op_tree.reordered.connect(_on_tree_reordered)
 	op_tree.item_selected.connect(_on_tree_item_selected)
+
+	frame_add_button.pressed.connect(_on_frame_add_button_pressed)
+	frame_remove_button.pressed.connect(_on_frame_remove_button_pressed)
 
 	current_frame_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
 	scratch_image = Image.create(320, 256, false, Image.FORMAT_RGB8)
@@ -169,6 +178,7 @@ func _ready() -> void:
 	current_frame.texture = current_frame_texture
 	current_frame.get_parent().resized.connect(_on_frame_container_resized)
 
+	_on_frame_add_button_pressed()
 	_draw_frame_from_commands()
 
 
@@ -221,6 +231,32 @@ func _on_frame_container_resized() -> void:
 	#var scale = mini(scale_vector.x, scale_vector.y)
 	#current_frame.custom_minimum_size = Vector2i(320, 256) * scale
 	pass
+
+func _on_frame_add_button_pressed() -> void:
+	var frame_thumbnail := frame_thumbnail_scene.instantiate() as FrameThumbnail
+	frame_thumbnail_container.add_child(frame_thumbnail)
+	frame_thumbnail.is_selected = true
+	frame_thumbnail.text = str(frame_thumbnail_container.get_children().size())
+
+
+func _on_frame_remove_button_pressed() -> void:
+	var children := frame_thumbnail_container.get_children()
+	if children.size() <= 1:
+		return
+
+	for i: int in children.size():
+		var frame_thumbnail: FrameThumbnail = children[i]
+		if frame_thumbnail.is_selected:
+			var sibling: FrameThumbnail
+			if i == 0:
+				if children.size() > 1:
+					sibling = children[i + 1]
+			else:
+				sibling = children[i - 1]
+			sibling.is_selected = true
+			frame_thumbnail.queue_free()
+			break
+
 
 
 func _get_free_op_name(op_tree: Tree, base_name: String) ->  String:

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dm8vdl7rxoe4r"]
+[gd_scene load_steps=10 format=3 uid="uid://dm8vdl7rxoe4r"]
 
 [ext_resource type="Script" path="res://scripts/editor_main.gd" id="1_krg5v"]
 [ext_resource type="Texture2D" uid="uid://bh34jlwud845r" path="res://assets/icons/Polygon2D.png" id="2_7628j"]
@@ -7,15 +7,10 @@
 [ext_resource type="Script" path="res://scripts/image_frame.gd" id="4_5usf1"]
 [ext_resource type="Texture2D" uid="uid://ce6npixdlvo2d" path="res://assets/icons/ActionCopy.png" id="4_rn7xw"]
 [ext_resource type="Texture2D" uid="uid://kkjn0i6qn4gf" path="res://assets/icons/ActionPaste.png" id="5_vay05"]
+[ext_resource type="PackedScene" uid="uid://ruj6lyoq0wy0" path="res://scenes/frame_thumbnail.tscn" id="8_sow1l"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5cc46"]
 size = Vector2(320, 256)
-
-[sub_resource type="Gradient" id="Gradient_5nl6j"]
-
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_0y3da"]
-gradient = SubResource("Gradient_5nl6j")
-width = 100
 
 [node name="Control" type="Control"]
 layout_mode = 3
@@ -25,6 +20,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_krg5v")
+frame_thumbnail_scene = ExtResource("8_sow1l")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
@@ -54,13 +50,13 @@ icon = ExtResource("2_7628j")
 [node name="CopyToAuxButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Copy to aux"
+text = "To aux"
 icon = ExtResource("4_rn7xw")
 
 [node name="PasteFromAuxButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Paste from aux"
+text = "From aux"
 icon = ExtResource("5_vay05")
 
 [node name="OpTree" type="Tree" parent="HBoxContainer/VBoxContainer2"]
@@ -95,277 +91,31 @@ texture = SubResource("PlaceholderTexture2D_5cc46")
 stretch_mode = 4
 script = ExtResource("4_5usf1")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
 layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="FrameAddButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add"
+
+[node name="FrameRemoveButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer"]
+[node name="FrameThumbnailContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-
-[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
 size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer6" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer6"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer7" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer7"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer8" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer8"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer9" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer9"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer10" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer10"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer11" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer11"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer12" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer12"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer13" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer13"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer14" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer14"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer15" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer15"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer16" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer16"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer17" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer17"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer18" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer18"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer19" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer19"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer2"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer3" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer3"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer4" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer4"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
-
-[node name="MarginContainer5" type="MarginContainer" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="TextureRect" type="TextureRect" parent="HBoxContainer/VBoxContainer/ScrollContainer/HBoxContainer/MarginContainer5"]
-custom_minimum_size = Vector2(0, 100)
-layout_mode = 2
-size_flags_vertical = 3
-size_flags_stretch_ratio = 3.0
-texture = SubResource("GradientTexture1D_0y3da")
