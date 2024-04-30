@@ -121,7 +121,6 @@ func _on_add_polygon_button_pressed() -> void:
 
 
 func _on_tree_reordered() -> void:
-	# TODO: apply changes to frame_data.ops order
 	tree_reordered.emit()
 
 

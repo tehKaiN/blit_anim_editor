@@ -39,7 +39,7 @@ layout_mode = 2
 text = "From aux"
 icon = ExtResource("5_vstml")
 
-[node name="OpTree" type="Tree" parent="."]
+[node name="OpTree" type="Tree" parent="." node_paths=PackedStringArray("_op_tree_editor")]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -50,3 +50,4 @@ hide_root = true
 select_mode = 1
 scroll_horizontal_enabled = false
 script = ExtResource("6_co246")
+_op_tree_editor = NodePath("..")
