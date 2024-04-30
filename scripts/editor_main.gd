@@ -152,15 +152,15 @@ func _ready() -> void:
 
 	_frame_manager.add_next_frame()
 	_op_tree_editor.frame_data = _frame_manager.current_frame
-	_draw_frame_from_commands()
+	_draw_current_frame()
 
 
 func _on_op_tree_editor_op_added() -> void:
-	_draw_frame_from_commands()
+	_draw_current_frame()
 
 
 func _on_op_tree_editor_tree_reordered() -> void:
-	_draw_frame_from_commands()
+	_draw_current_frame()
 
 func _on_op_tree_editor_op_selection_changed() -> void:
 		if _current_op_editor:
@@ -174,12 +174,13 @@ func _on_op_tree_editor_op_selection_changed() -> void:
 				_current_op_editor.data_changed.connect(_on_op_editor_data_changed)
 
 func _on_op_editor_data_changed() -> void:
-	_draw_frame_from_commands()
+	_draw_current_frame()
 
 
 func _on_frame_manager_frame_selected() -> void:
 	_op_tree_editor.frame_data = _frame_manager.current_frame
-	_draw_frame_from_commands()
+	_draw_current_frame()
+
 
 func _on_frame_container_resized() -> void:
 	#var scale_vector := (_current_frame_preview.get_parent() as Control).size / Vector2(320, 256)
@@ -188,9 +189,13 @@ func _on_frame_container_resized() -> void:
 	pass
 
 
-func _draw_frame_from_commands() -> void:
+func _draw_current_frame() -> void:
 	_current_frame_image.fill(Color.BLACK)
-	for op: BlitterOp in _frame_manager.current_frame.ops:
-		op.apply(_current_frame_image, _scratch_image, _aux_image)
+	# Needs to draw all previous frames so that scratch image is properly set
+	for frame: FrameData in _frame_manager.frames:
+		for op: BlitterOp in frame.ops:
+			op.apply(_current_frame_image, _scratch_image, _aux_image)
+		if frame == _frame_manager.current_frame:
+			break
 	_current_frame_texture.update(_current_frame_image)
 

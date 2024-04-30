@@ -16,6 +16,7 @@ var current_frame: EditorMain.FrameData
 func _ready() -> void:
 	frame_add_button.pressed.connect(_on_frame_add_button_pressed)
 	frame_remove_button.pressed.connect(_on_frame_remove_button_pressed)
+	frame_thumbnail_container.child_order_changed.connect(_on_thumbnail_container_child_order_changed)
 
 
 func add_next_frame() -> void:
@@ -28,7 +29,6 @@ func add_next_frame() -> void:
 	frame_thumbnail.selected.connect(_on_frame_thumbnail_selected)
 	frame_thumbnail.frame_data = frame_data
 	frame_thumbnail.is_selected = true
-	frame_thumbnail.text = str(frame_thumbnail_container.get_children().size())
 
 
 func _on_frame_thumbnail_selected(frame_data: EditorMain.FrameData) -> void:
@@ -60,3 +60,9 @@ func _on_frame_remove_button_pressed() -> void:
 			frame_thumbnail.queue_free()
 			sibling.is_selected = true
 			break
+
+
+func _on_thumbnail_container_child_order_changed() -> void:
+	var children := frame_thumbnail_container.get_children()
+	for i: int in children.size():
+		(children[i] as FrameThumbnail).text = str(i + 1)
