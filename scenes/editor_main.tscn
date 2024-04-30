@@ -1,13 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dm8vdl7rxoe4r"]
+[gd_scene load_steps=6 format=3 uid="uid://dm8vdl7rxoe4r"]
 
 [ext_resource type="Script" path="res://scripts/editor_main.gd" id="1_krg5v"]
-[ext_resource type="Texture2D" uid="uid://bh34jlwud845r" path="res://assets/icons/Polygon2D.png" id="2_7628j"]
-[ext_resource type="Script" path="res://scripts/op_tree.gd" id="2_hwnt3"]
-[ext_resource type="Texture2D" uid="uid://7vj33twcq6dx" path="res://assets/icons/Eraser.png" id="3_cfks1"]
+[ext_resource type="PackedScene" uid="uid://bwdbjxhjg2uej" path="res://scenes/op_tree_editor.tscn" id="2_un3e8"]
 [ext_resource type="Script" path="res://scripts/image_frame.gd" id="4_5usf1"]
-[ext_resource type="Texture2D" uid="uid://ce6npixdlvo2d" path="res://assets/icons/ActionCopy.png" id="4_rn7xw"]
-[ext_resource type="Texture2D" uid="uid://kkjn0i6qn4gf" path="res://assets/icons/ActionPaste.png" id="5_vay05"]
-[ext_resource type="PackedScene" uid="uid://ruj6lyoq0wy0" path="res://scenes/frame_thumbnail.tscn" id="8_sow1l"]
+[ext_resource type="PackedScene" uid="uid://bqxa7uofnwsw8" path="res://scenes/frame_manager.tscn" id="9_xvxmo"]
 
 [sub_resource type="PlaceholderTexture2D" id="PlaceholderTexture2D_5cc46"]
 size = Vector2(320, 256)
@@ -20,56 +16,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_krg5v")
-frame_thumbnail_scene = ExtResource("8_sow1l")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 layout_mode = 0
 offset_right = 1148.0
 offset_bottom = 645.0
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer2"]
-custom_minimum_size = Vector2(0, 24)
-layout_mode = 2
-
-[node name="AddClearButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
+[node name="OpTreeEditor" parent="HBoxContainer" instance=ExtResource("2_un3e8")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Clear"
-icon = ExtResource("3_cfks1")
-
-[node name="AddPolygonButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Polygon"
-icon = ExtResource("2_7628j")
-
-[node name="CopyToAuxButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "To aux"
-icon = ExtResource("4_rn7xw")
-
-[node name="PasteFromAuxButton" type="Button" parent="HBoxContainer/VBoxContainer2/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "From aux"
-icon = ExtResource("5_vay05")
-
-[node name="OpTree" type="Tree" parent="HBoxContainer/VBoxContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme_override_font_sizes/font_size = 12
-allow_search = false
-hide_root = true
-select_mode = 1
-scroll_horizontal_enabled = false
-script = ExtResource("2_hwnt3")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer"]
 layout_mode = 2
@@ -91,31 +46,6 @@ texture = SubResource("PlaceholderTexture2D_5cc46")
 stretch_mode = 4
 script = ExtResource("4_5usf1")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-alignment = 1
-
-[node name="FrameAddButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+[node name="FrameManager" parent="HBoxContainer/VBoxContainer" instance=ExtResource("9_xvxmo")]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Add"
-
-[node name="FrameRemoveButton" type="Button" parent="HBoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-text = "Remove"
-
-[node name="ScrollContainer" type="ScrollContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-horizontal_scroll_mode = 2
-vertical_scroll_mode = 0
-
-[node name="FrameThumbnailContainer" type="HBoxContainer" parent="HBoxContainer/VBoxContainer/HBoxContainer/ScrollContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3

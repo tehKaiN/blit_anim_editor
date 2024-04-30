@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqxa7uofnwsw8"]
+
+[ext_resource type="Script" path="res://scripts/frame_manager.gd" id="1_xk5ti"]
+[ext_resource type="PackedScene" uid="uid://ruj6lyoq0wy0" path="res://scenes/frame_thumbnail.tscn" id="2_am445"]
+
+[node name="FrameManager" type="HBoxContainer"]
+script = ExtResource("1_xk5ti")
+frame_thumbnail_scene = ExtResource("2_am445")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="FrameAddButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Add"
+
+[node name="FrameRemoveButton" type="Button" parent="VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Remove"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+horizontal_scroll_mode = 2
+vertical_scroll_mode = 0
+
+[node name="FrameThumbnailContainer" type="HBoxContainer" parent="ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="PlaybackTimer" type="Timer" parent="."]
+unique_name_in_owner = true

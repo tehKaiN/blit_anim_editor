@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://bwdbjxhjg2uej"]
+
+[ext_resource type="Script" path="res://scripts/op_tree_editor.gd" id="1_fttsk"]
+[ext_resource type="Texture2D" uid="uid://7vj33twcq6dx" path="res://assets/icons/Eraser.png" id="2_mdsje"]
+[ext_resource type="Texture2D" uid="uid://bh34jlwud845r" path="res://assets/icons/Polygon2D.png" id="3_avify"]
+[ext_resource type="Texture2D" uid="uid://ce6npixdlvo2d" path="res://assets/icons/ActionCopy.png" id="4_ovchu"]
+[ext_resource type="Texture2D" uid="uid://kkjn0i6qn4gf" path="res://assets/icons/ActionPaste.png" id="5_vstml"]
+[ext_resource type="Script" path="res://scripts/op_tree.gd" id="6_co246"]
+
+[node name="OpTreeEditor" type="VBoxContainer"]
+size_flags_horizontal = 3
+script = ExtResource("1_fttsk")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+custom_minimum_size = Vector2(0, 24)
+layout_mode = 2
+
+[node name="AddClearButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Clear"
+icon = ExtResource("2_mdsje")
+
+[node name="AddPolygonButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Polygon"
+icon = ExtResource("3_avify")
+
+[node name="CopyToAuxButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "To aux"
+icon = ExtResource("4_ovchu")
+
+[node name="PasteFromAuxButton" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "From aux"
+icon = ExtResource("5_vstml")
+
+[node name="OpTree" type="Tree" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_font_sizes/font_size = 12
+allow_search = false
+hide_root = true
+select_mode = 1
+scroll_horizontal_enabled = false
+script = ExtResource("6_co246")
