@@ -2,8 +2,27 @@ class_name OpTree
 extends Tree
 
 signal reordered()
+signal op_removed(op: EditorMain.BlitterOp)
 
 @export var _op_tree_editor: OpTreeEditor
+var is_button_consumed := false
+
+
+func _gui_input(event: InputEvent) -> void:
+	if event.is_action("delete"):
+			if has_focus() && !is_button_consumed:
+				var selected_item := get_selected()
+				if selected_item:
+					var next_selected := selected_item.get_next()
+					if !next_selected:
+						next_selected = selected_item.get_prev()
+					var op = selected_item.get_meta("op")
+					selected_item.get_parent().remove_child(selected_item)
+					op_removed.emit(op)
+					set_selected(next_selected, 0)
+				is_button_consumed = true
+			elif is_button_consumed && !event.is_pressed():
+				is_button_consumed = false
 
 
 func _get_drag_data(at_position: Vector2) -> Variant:

@@ -20,6 +20,12 @@ var frame_data: EditorMain.FrameData:
 		frame_data = value
 		_fill_tree_with_frame_data()
 
+		var children := _root_node.get_children()
+		if !children.is_empty():
+			op_tree.set_selected(children[0], 0)
+		else:
+			selected_op = null
+
 var selected_op: EditorMain.BlitterOp:
 	set(value):
 		if selected_op == value:
@@ -40,6 +46,9 @@ func _ready() -> void:
 
 	op_tree.reordered.connect(_on_tree_reordered)
 	op_tree.item_selected.connect(_on_tree_item_selected)
+	op_tree.nothing_selected.connect(_on_tree_nothing_selected)
+	op_tree.op_removed.connect(_on_tree_op_removed)
+
 
 func _fill_tree_with_frame_data() -> void:
 	for child: TreeItem in _root_node.get_children():
@@ -126,3 +135,14 @@ func _on_tree_reordered() -> void:
 
 func _on_tree_item_selected() -> void:
 	selected_op = op_tree.get_selected().get_meta("op")
+
+
+func _on_tree_nothing_selected() -> void:
+	selected_op = null
+
+
+func _on_tree_op_removed(op: EditorMain.BlitterOp) -> void:
+	frame_data.ops.erase(op)
+	if selected_op == op:
+		selected_op = null
+	tree_reordered.emit()
