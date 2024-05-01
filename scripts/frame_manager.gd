@@ -1,5 +1,5 @@
 class_name FrameManager
-extends HBoxContainer
+extends PanelContainer
 
 signal frame_selected()
 

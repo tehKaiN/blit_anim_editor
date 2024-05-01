@@ -1,37 +1,91 @@
-[gd_scene load_steps=3 format=3 uid="uid://bqxa7uofnwsw8"]
+[gd_scene load_steps=6 format=3 uid="uid://bqxa7uofnwsw8"]
 
 [ext_resource type="Script" path="res://scripts/frame_manager.gd" id="1_xk5ti"]
 [ext_resource type="PackedScene" uid="uid://ruj6lyoq0wy0" path="res://scenes/frame_thumbnail.tscn" id="2_am445"]
+[ext_resource type="Texture2D" uid="uid://ccfyrhrrak46a" path="res://assets/icons/PlayStart.png" id="3_fkvwg"]
+[ext_resource type="Texture2D" uid="uid://38s48hddoyea" path="res://assets/icons/Play.png" id="4_tiosb"]
+[ext_resource type="Texture2D" uid="uid://b7foowa5kdfwp" path="res://assets/icons/Stop.png" id="5_byb82"]
 
-[node name="FrameManager" type="HBoxContainer"]
+[node name="FrameManager" type="PanelContainer"]
 script = ExtResource("1_xk5ti")
 frame_thumbnail_scene = ExtResource("2_am445")
 
-[node name="VBoxContainer" type="VBoxContainer" parent="."]
+[node name="PlaybackTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 alignment = 1
 
-[node name="FrameAddButton" type="Button" parent="VBoxContainer"]
+[node name="FrameAddButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Add"
+text = "Add frame"
 
-[node name="FrameRemoveButton" type="Button" parent="VBoxContainer"]
+[node name="FrameRemoveButton" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
-text = "Remove"
+text = "Remove frame"
 
-[node name="ScrollContainer" type="ScrollContainer" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="DurationLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Duration"
+
+[node name="DurationInput" type="SpinBox" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+min_value = 1.0
+max_value = 10.0
+value = 1.0
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 1
+
+[node name="FpsLabel" type="Label" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "FPS: 50"
+horizontal_alignment = 1
+
+[node name="TimelinePlayStart" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("3_fkvwg")
+
+[node name="TimelinePlay" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("4_tiosb")
+
+[node name="TimelineStop" type="Button" parent="MarginContainer/HBoxContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+icon = ExtResource("5_byb82")
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 horizontal_scroll_mode = 2
 vertical_scroll_mode = 0
 
-[node name="FrameThumbnailContainer" type="HBoxContainer" parent="ScrollContainer"]
+[node name="FrameThumbnailContainer" type="HBoxContainer" parent="MarginContainer/HBoxContainer/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
-
-[node name="PlaybackTimer" type="Timer" parent="."]
-unique_name_in_owner = true
